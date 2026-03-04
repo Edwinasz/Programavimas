@@ -1,0 +1,151 @@
+class Person:
+    def __init__(self, name, person_id):
+        self.name = name
+        self.person_id = person_id
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Name must be a string")
+        if value.strip() == "":
+            raise ValueError("Name cannot be empty")
+        self._name = value
+
+    @property
+    def person_id(self):
+        return self._id
+
+    @person_id.setter
+    def person_id(self, value):
+        if not isinstance(value, str):
+            raise TypeError("ID must be a string")
+        if value.strip() == "":
+            raise ValueError("ID cannot be empty")
+        self._id = value
+
+    def display_info(self):
+        print(f"Name: {self.name}")
+        print(f"ID: {self.person_id}")
+
+
+class Student(Person):
+    def __init__(self, name, student_id, grades=None):
+        super().__init__(name, student_id)
+        self.student_id = student_id
+        self._grades = list(grades) if grades is not None else []
+
+    @property
+    def student_id(self):
+        return self.person_id
+
+    @student_id.setter
+    def student_id(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Student ID must be a string")
+        if not (value.startswith("S") and len(value) == 4 and value[1:].isdigit()):
+            raise ValueError("Student ID must start with 'S' followed by 3 digits")
+        self._id = value
+
+    def add_grade(self, grade):
+        if not isinstance(grade, (int, float)):
+            raise TypeError("Grade must be a number")
+        if not 0 <= grade <= 100:
+            raise ValueError("Grade must be between 0 and 100")
+        self._grades.append(grade)
+
+    @property
+    def grades(self):
+        return self._grades.copy()
+
+    @property
+    def average(self):
+        if not self._grades:
+            return 0
+        if len(self._grades) == 0:
+            return 0
+        return round(sum(self._grades) / len(self._grades), 2)
+
+    @average.setter
+    def average(self, value):
+        raise AttributeError("Average is read-only")
+
+    def get_average(self):
+        return self.average
+
+    def display_info(self):
+        super().display_info()
+        print(f"Grades: {self.grades}")
+        print(f"Average Grade: {self.average:.2f}")
+
+
+class Teacher(Person):
+    def __init__(self, name, teacher_id, subject):
+        super().__init__(name, teacher_id)
+        self.teacher_id = teacher_id
+        self.subject = subject
+        self._students = []
+
+    @property
+    def teacher_id(self):
+        return self.person_id
+
+    @teacher_id.setter
+    def teacher_id(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Teacher ID must be a string")
+        if not (value.startswith("T") and len(value) == 4 and value[1:].isdigit()):
+            raise ValueError("Teacher ID must start with 'T' followed by 3 digits")
+        self._id = value
+
+    @property
+    def subject(self):
+        return self._subject
+
+    @subject.setter
+    def subject(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Subject must be a string")
+        if value.strip() == "":
+            raise ValueError("Subject cannot be empty")
+        self._subject = value
+
+    def add_student(self, student):
+        if not isinstance(student, Student):
+            raise TypeError("Must add a Student object")
+        self._students.append(student)
+
+    @property
+    def students(self):
+        return self._students.copy()
+
+    def get_class_average(self):
+        if not self._students:
+            return 0
+        averages = [student.average for student in self._students]
+        return round(sum(averages) / len(averages), 2)
+
+    def display_info(self):
+        super().display_info()
+        print(f"Subject: {self.subject}")
+        print(f"Number of students: {len(self._students)}")
+
+
+teacher = Teacher("Dr. Smith", "T001", "Mathematics")
+
+student1 = Student("Anna", "S001")
+student1.add_grade(85)
+student1.add_grade(90)
+
+student2 = Student("John", "S002")
+student2.add_grade(75)
+student2.add_grade(80)
+
+teacher.add_student(student1)
+teacher.add_student(student2)
+
+teacher.display_info()
+print(f"Class average: {teacher.get_class_average()}")
