@@ -180,6 +180,34 @@ for order in [order1, order2, order3]:
     order.display_order() # Different shipping costs
 '''  
 
+# Singleton pattern
 
+class CartManager:
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._carts = {} # Dictionary of customer_id: cart
+        return cls._instance
 
+    def get_cart(self, customer_id):
+        if customer_id not in self._carts:
+            self._carts[customer_id] = ShoppingCart()
+        return self._carts[customer_id]
 
+    def get_all_carts_total(self):
+        return sum(cart.get_total() for cart in
+                   self._carts.values())
+    
+# Test nr. 4
+
+'''
+# These are the SAME object
+manager1 = CartManager()
+manager2 = CartManager()
+print(manager1 is manager2) # True
+# Both see the same carts
+cart1 = manager1.get_cart("customer1")
+cart2 = manager2.get_cart("customer1")
+print(cart1 is cart2) # True
+'''
