@@ -120,7 +120,7 @@ customer.view_cart() # Empty cart
 '''
 
 # Part 3
-
+# Factory pattern
 class Order:
     def __init__(self, cart_items):
         self._items = cart_items
