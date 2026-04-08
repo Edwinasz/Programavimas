@@ -1,4 +1,3 @@
-'''python
 class Person:
     def __init__(self, name, person_id):
         self.name = name
@@ -150,4 +149,3 @@ teacher.add_student(student2)
 
 teacher.display_info()
 print(f"Class average: {teacher.get_class_average()}")
-'''
